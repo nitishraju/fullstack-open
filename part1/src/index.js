@@ -7,7 +7,7 @@ const Button = ({text, clickHandler}) => (
   </button>
 )
 
-const Stat = ({text, count}) => <p>{text} {count}</p>
+const Stat = ({text, value}) => <p>{text} {value}</p>
 
 const App = () => {
   const [good, setGood] = useState(0)
@@ -17,6 +17,10 @@ const App = () => {
   const incrementGood = () => setGood(good + 1)
   const incrementNeutral = () => setNeutral(neutral + 1)
   const incrementBad = () => setBad(bad + 1)
+
+  const getTotal = () => good + neutral + bad
+  const getPositivePct = () => isNaN(good/getTotal()) ? "N/A" : (good/getTotal())*100 + "%"
+  const getAvg = () => (getTotal() === 0) ? 0 : (good-bad)/getTotal()
 
   return (
     <div>
@@ -28,9 +32,12 @@ const App = () => {
       </div>
       <h1>statistics</h1>
       <div>
-        <Stat text="good" count={good} />
-        <Stat text="neutral" count={neutral} />
-        <Stat text="bad" count={bad} />
+        <Stat text="good" value={good} />
+        <Stat text="neutral" value={neutral} />
+        <Stat text="bad" value={bad} />
+        <Stat text="all" value={getTotal()} />
+        <Stat text="average" value={getAvg()} />
+        <Stat text="positive" value={getPositivePct()} />
       </div>
     </div>
   )
