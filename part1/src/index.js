@@ -1,20 +1,24 @@
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 
-const Button = ({text, clickHandler}) => (
-  <div>
-    <button onClick={clickHandler}>{text}</button>
-  </div>
-)
+const Button = ({text, clickHandler}) => <button onClick={clickHandler}>{text}</button>
 
 const App = (props) => {
   const [selected, setSelected] = useState(0)
+  const [votes, setVotes] = useState(props.anecdotes.map((x) => 0))
 
+  const incrementVote = (selected) => () => {
+    const copy = [...votes]
+    copy[selected] += 1
+    setVotes(copy)
+  }
   const setRandomIndex = () => setSelected(Math.floor(Math.random()*props.anecdotes.length))
 
   return (
     <div>
       <p>{props.anecdotes[selected]}</p>
+      <p>has {votes[selected]} votes</p>
+      <Button text="vote" clickHandler={incrementVote(selected)} />
       <Button text="next anecdote" clickHandler={setRandomIndex} />
     </div>
   )
