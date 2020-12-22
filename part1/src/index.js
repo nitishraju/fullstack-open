@@ -22,6 +22,23 @@ const App = () => {
   const getPositivePct = () => isNaN(good/getTotal()) ? "N/A" : (good/getTotal())*100 + "%"
   const getAvg = () => (getTotal() === 0) ? 0 : (good-bad)/getTotal()
 
+  if (getTotal() === 0) {
+    return (
+      <div>
+        <h1>give feedback</h1>
+        <div>
+          <Button text="good" clickHandler={incrementGood} />
+          <Button text="neutral" clickHandler={incrementNeutral} />
+          <Button text="bad" clickHandler={incrementBad} />
+        </div>
+        <div>
+        <h1>statistics</h1>
+        <p>No feedback given</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div>
       <h1>give feedback</h1>
