@@ -18,11 +18,17 @@ const Part = ({part}) => {
 }
 
 const Content = ({course}) => {
+  const reducer = (accumulator, parts_obj) => {
+    return accumulator + parts_obj.exercises
+  }
+  const total = course.parts.length > 0 ? course.parts.reduce(reducer, 0) : 0
+
   return (
     <div>
       {course.parts.map((part) =>
         <Part key={part.id} part={part} />
       )}
+      <p><strong>Total of {total} exercises</strong></p>
     </div>
   )
 }
