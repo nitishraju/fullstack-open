@@ -1,10 +1,10 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-const Header = () => {
+const Header = ({course}) => {
   return (
     <div>
-      <h1>Half Stack Application development</h1>
+      <h1>{course.name}</h1>
     </div>
   )
 }
@@ -33,43 +33,67 @@ const Content = ({course}) => {
   )
 }
 
-const Course = ({course}) => {
+const Course = ({courses}) => {
   return (
     <div>
-    <Header />
-    <Content course={course} />
+      {courses.map((course) => {
+        return (
+          <div key={course.name}>
+          <Header key={course.name} course={course} />
+          <Content key={course.id} course={course} />
+          </div>
+        )
+      })}
     </div>
   )}
 
 const App = () => {
-  const course = {
-    id: 1,
-    name: 'Half Stack application development',
-    parts: [
-      {
-        name: 'Fundamentals of React',
-        exercises: 10,
-        id: 1
-      },
-      {
-        name: 'Using props to pass data',
-        exercises: 7,
-        id: 2
-      },
-      {
-        name: 'State of a component',
-        exercises: 14,
-        id: 3
-      },
-      {
-        name: 'EXTRA COURSE',
-        exercises: 21,
-        id: 4
-      }
-    ]
-  }
+  const courses = [
+    {
+      name: 'Half Stack application development',
+      id: 1,
+      parts: [
+        {
+          name: 'Fundamentals of React',
+          exercises: 10,
+          id: 1
+        },
+        {
+          name: 'Using props to pass data',
+          exercises: 7,
+          id: 2
+        },
+        {
+          name: 'State of a component',
+          exercises: 14,
+          id: 3
+        },
+        {
+          name: 'Redux',
+          exercises: 11,
+          id: 4
+        }
+      ]
+    }, 
+    {
+      name: 'Node.js',
+      id: 2,
+      parts: [
+        {
+          name: 'Routing',
+          exercises: 3,
+          id: 1
+        },
+        {
+          name: 'Middlewares',
+          exercises: 7,
+          id: 2
+        }
+      ]
+    }
+  ]
 
-  return <Course course={course} />
+  return <Course courses={courses} />
 }
 
 ReactDOM.render(
