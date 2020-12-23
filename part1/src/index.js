@@ -1,67 +1,72 @@
-import React, { useState } from 'react'
+import React from 'react'
 import ReactDOM from 'react-dom'
 
-const Button = ({text, clickHandler}) => <button onClick={clickHandler}>{text}</button>
-
-const App = (props) => {
-  const [selected, setSelected] = useState(0)
-  const [voteCounts, setVotes] = useState(props.anecdotes.map((x) => 0))
-  const [mostVotes, setMostVotes] = useState(-1)
-
-  const incrementVote = (selected) => () => {
-    const copy = [...voteCounts]
-    copy[selected] += 1
-    setVotes(copy)
-
-    checkHighestVotes(copy[selected])
-  }
-
-  const checkHighestVotes = (currentVotes) => {
-    if (mostVotes === -1 || currentVotes > voteCounts[mostVotes]) {
-      setMostVotes(selected)
-    }
-  }
-
-  const setRandomIndex = () => setSelected(Math.floor(Math.random()*props.anecdotes.length))
-
-  if (mostVotes === -1) {
-    return (
-    <div>
-      <h1>Anecdote of the day</h1>
-      <p>{props.anecdotes[selected]}</p>
-      <p>has {voteCounts[selected]} votes</p>
-      <Button text="vote" clickHandler={incrementVote(selected)} />
-      <Button text="next anecdote" clickHandler={setRandomIndex} />
-      <h1>Anecdote with most votes</h1>
-      <p>No votes yet!</p>
-    </div>
-    )
-  }
-
+const Header = () => {
   return (
     <div>
-      <h1>Anecdote of the day</h1>
-      <p>{props.anecdotes[selected]}</p>
-      <p>has {voteCounts[selected]} votes</p>
-      <Button text="vote" clickHandler={incrementVote(selected)} />
-      <Button text="next anecdote" clickHandler={setRandomIndex} />
-      <h1>Anecdote with most votes</h1>
-      <p>{props.anecdotes[mostVotes]}</p>
-      <p>has {voteCounts[mostVotes]} votes</p>
+      <h1>Half Stack Application development</h1>
     </div>
   )
 }
 
-const anecdotes = [
-  'If it hurts, do it more often',
-  'Adding manpower to a late software project makes it later!',
-  'The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.',
-  'Any fool can write code that a computer can understand. Good programmers write code that humans can understand.',
-  'Premature optimization is the root of all evil.',
-  'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.'
-]
+const Part = ({part}) => {
+  return (
+    <div>
+      <p>{part.name} {part.exercises}</p>
+    </div>
+  )
+}
+
+const Content = ({course}) => {
+  return (
+    <div>
+      {course.parts.map((part) =>
+        <Part key={part.id} part={part} />
+      )}
+    </div>
+  )
+}
+
+const Course = ({course}) => {
+  return (
+    <div>
+    <Header />
+    <Content course={course} />
+    </div>
+  )}
+
+const App = () => {
+  const course = {
+    id: 1,
+    name: 'Half Stack application development',
+    parts: [
+      {
+        name: 'Fundamentals of React',
+        exercises: 10,
+        id: 1
+      },
+      {
+        name: 'Using props to pass data',
+        exercises: 7,
+        id: 2
+      },
+      {
+        name: 'State of a component',
+        exercises: 14,
+        id: 3
+      },
+      {
+        name: 'EXTRA COURSE',
+        exercises: 21,
+        id: 4
+      }
+    ]
+  }
+
+  return <Course course={course} />
+}
 
 ReactDOM.render(
-  <App anecdotes={anecdotes} />,
+  <App  />,
   document.getElementById('root')
 )
