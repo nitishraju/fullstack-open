@@ -19,12 +19,18 @@ const App = () => {
 
   const submitHandler = (event) => {
     event.preventDefault()
+    
+    const findDuplicate = persons.filter(nameObject => nameObject.name === newName)
+    if (findDuplicate.length !== 0) {
+      alert(`${newName} already in phonebook.`)
+      return
+    }
 
-    const noteObject = {
+    const nameObject = {
       name: newName
     }
 
-    setPersons(persons.concat(noteObject))
+    setPersons(persons.concat(nameObject))
     setNewName('')
   }
 
