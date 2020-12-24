@@ -4,17 +4,33 @@ import ReactDOM from 'react-dom'
 const Persons = ({personObject}) => {
   return (
     <div>
-    <p>{personObject.name} {personObject.number}</p>
+    <p>{personObject.name} {personObject.phone}</p>
     </div>
+  )
+}
+
+const TextInput = ({text, value, handler}) => {
+  return (
+    <div>
+    {text}: <input value={value} onChange={handler}/>
+  </div>
+  )
+}
+
+const Filter = ({filter, filterHandler}) => {
+  return (
+  <div>
+    filter shown with <input value={filter} onChange={filterHandler} />
+  </div>
   )
 }
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456' },
-    { name: 'Ada Lovelace', number: '39-44-5323523' },
-    { name: 'Dan Abramov', number: '12-43-234345' },
-    { name: 'Mary Poppendieck', number: '39-23-6423122' }
+    { name: 'Arto Hellas', phone: '040-123456' },
+    { name: 'Ada Lovelace', phone: '39-44-5323523' },
+    { name: 'Dan Abramov', phone: '12-43-234345' },
+    { name: 'Mary Poppendieck', phone: '39-23-6423122' }
   ])
   const [ newName, setNewName ] = useState('')
   const [ newPhone, setNewPhone ] = useState('')
@@ -48,17 +64,11 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <div>
-        filter shown with <input value={filter} onChange={filterHandler} />
-      </div>
-      <h2>Add a new person</h2>
+      <Filter filter={filter} filterHandler={filterHandler} />
+      <h3>Add a new person</h3>
       <form onSubmit={submitHandler} >
-        <div>
-          name: <input value={newName} onChange={nameHandler}/>
-        </div>
-        <div>
-          phone: <input value={newPhone} onChange={phoneHandler}/>
-        </div>
+        <TextInput text="name" value={newName} handler={nameHandler} />
+        <TextInput text="phone" value={newPhone} handler={phoneHandler} />
         <div>
           <button type="submit">add</button>
         </div>
