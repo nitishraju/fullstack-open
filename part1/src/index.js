@@ -27,7 +27,6 @@ const App = () => {
 
   const nameHandler = (event) => setNewName(event.target.value)
   const phoneHandler = (event) => setNewPhone(event.target.value)
-
   const submitHandler = (event) => {
     event.preventDefault()
     
@@ -42,19 +41,37 @@ const App = () => {
       return
     }
 
-    const personObject = {
-      name: newName,
-      number: newPhone,
-      id: persons.length + 1
+    const generatePersonObject = () => {
+      const id = persons.length > 0 
+                ? persons[persons.length - 1].id + 1 
+                : 1
+
+      const person = {
+        name: newName,
+        number: newPhone,
+        id: id
+      }
+      return person
     }
 
     personService
-      .addPerson(personObject)
+      .addPerson(generatePersonObject())
       .then(responsePerson => {
         setPersons(persons.concat(responsePerson))
         setNewName('')
         setNewPhone('')
       })
+  }
+
+  const deleteHandler = ({name, id}) => {
+    const selection = window.confirm(`Delete ${name}?`)
+    if (selection) {
+      personService.deletePerson(id)
+      
+      const changedPersons = persons.filter((personObject) => personObject.id !== id)
+      setPersons(changedPersons)
+    }
+    else { return }
   }
 
   const filterHandler = (event) => setFilter(event.target.value)
@@ -71,7 +88,10 @@ const App = () => {
         phoneVal={newPhone} phoneHandler={phoneHandler}
       />
       <h2>Numbers</h2>
-      <PersonsList personsList={personsToShow} />
+      <PersonsList 
+        personsList={personsToShow} 
+        deleteHandler={deleteHandler}
+      />
     </div>
   )
 }
