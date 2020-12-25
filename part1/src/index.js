@@ -16,11 +16,9 @@ const CountryInfo = ({countryArr}) => {
       <h3>Languages</h3>
       <div>
         <ul>
-          {countryObject.languages.map((languageObject) => {
-            return (
-              <li key={languageObject.name} >{languageObject.name}</li>
-            )
-          })}
+          {countryObject.languages.map((languageObject) => 
+          <li key={languageObject.name}>{languageObject.name}</li>
+          )}
         </ul>
       </div>
       <div>
@@ -30,22 +28,39 @@ const CountryInfo = ({countryArr}) => {
   )
 }
 
-const CountryList = ({countries, search}) => {
+const CountryList = ({countries, search, country, setCountryView}) => {
+  if (country) {
+    return (
+      <div>
+        <CountryInfo countryArr={countries.filter((countryObject) => countryObject.name.toUpperCase().includes(country.toUpperCase()))} />
+      </div>
+    )
+  }
+
   if (countries.length === 1 && search) {
     return (
     <div>
       <CountryInfo countryArr={countries} />
     </div>
     )
+
   } else
   if (countries.length > 0 && countries.length <= 10 && search) {
+    const handleShowClick = (countryObject) => setCountryView(countryObject.name)
+
     return (
       <div>
-        {countries.map((countryObject) =>
-          <p key={countryObject.name} >{countryObject.name}</p>
-        )}
+        {countries.map((countryObject) => {
+          return (
+            <div key={countryObject.name}>
+              {countryObject.name}
+              <button key={countryObject.name} type='button' onClick={() => handleShowClick(countryObject)}>Show</button>
+            </div>
+          )
+        })}
       </div>
     )
+
   } else
   if (countries.length > 10 && search) {
     return (
@@ -61,6 +76,7 @@ const CountryList = ({countries, search}) => {
 const App = () => {
   const [countries, setCountries] = useState([])
   const [searchTarget, setSearchTarget] = useState('')
+  const [showCountry, setShowCountry] = useState('')
 
   useEffect(() => {
     axios
@@ -68,13 +84,16 @@ const App = () => {
       .then(response => setCountries(response.data))
   }, [])
 
-  const searchHandler = (event) => setSearchTarget(event.target.value)
+  const searchHandler = (event) => {
+    setShowCountry('')
+    setSearchTarget(event.target.value)
+  }
   const countriesToShow = countries.filter((countryObject) => countryObject.name.toUpperCase().includes(searchTarget.toUpperCase()))
 
   return (
     <div>
       Find Countries: <input value={searchTarget} onChange={searchHandler} />
-      <CountryList countries={countriesToShow} search={searchTarget} />
+      <CountryList countries={countriesToShow} search={searchTarget} country={showCountry} setCountryView={setShowCountry} />
     </div>
   )
 }
