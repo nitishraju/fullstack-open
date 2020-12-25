@@ -3,7 +3,41 @@ import ReactDOM from 'react-dom'
 
 import axios from 'axios'
 
+const CountryInfo = ({countryArr}) => {
+  const countryObject = countryArr[0]
+
+  return (
+    <div>
+      <h1>{countryObject.name}</h1>
+      <div>
+        <p>Capital: {countryObject.capital}</p>
+        <p>Population: {countryObject.population}</p>
+      </div>
+      <h3>Languages</h3>
+      <div>
+        <ul>
+          {countryObject.languages.map((languageObject) => {
+            return (
+              <li key={languageObject.name} >{languageObject.name}</li>
+            )
+          })}
+        </ul>
+      </div>
+      <div>
+        <img src={countryObject.flag} alt={`${countryObject.name} flag`} width="100" />
+      </div>
+    </div>
+  )
+}
+
 const CountryList = ({countries, search}) => {
+  if (countries.length === 1 && search) {
+    return (
+    <div>
+      <CountryInfo countryArr={countries} />
+    </div>
+    )
+  } else
   if (countries.length > 0 && countries.length <= 10 && search) {
     return (
       <div>
@@ -39,7 +73,7 @@ const App = () => {
 
   return (
     <div>
-      find countries: <input value={searchTarget} onChange={searchHandler} />
+      Find Countries: <input value={searchTarget} onChange={searchHandler} />
       <CountryList countries={countriesToShow} search={searchTarget} />
     </div>
   )
