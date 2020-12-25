@@ -1,125 +1,83 @@
 import React, { useState, useEffect } from 'react'
 import ReactDOM from 'react-dom'
+import PersonForm from './components/PersonsForm'
+import PersonsList from './components/PersonsList'
 
 import axios from 'axios'
 
-const WeatherInfo = ({capital}) => {
-  const [temp, setTemp] = useState(-1)
-  const [wind, setWind] = useState(-1)
-
-  useEffect(() => {
-    axios
-      .get(`https://api.openweathermap.org/data/2.5/weather?q=${capital}&appid=${process.env.REACT_APP_API_KEY}&units=metric`)
-      .then((response) => {
-        setTemp(response.data.main.temp)
-        setWind(response.data.wind.speed)
-      })
-  }, [capital])
-
+const Filter = ({ filter, filterHandler }) => {
   return (
     <div>
-      <h3>Weather in {capital}</h3>
-      <p><strong>Temperature:</strong> {Math.round(temp)} Celsius</p>
-      <p><strong>Wind:</strong> {Math.round(wind)} meters/second</p>
+      filter shown with <input value={filter} onChange={filterHandler} />
     </div>
   )
-}
-
-const CountryInfo = ({countryArr}) => {
-  const countryObject = countryArr[0]
-
-  return (
-    <div>
-      <h1>{countryObject.name}</h1>
-      <div>
-        <p>Capital: {countryObject.capital}</p>
-        <p>Population: {countryObject.population}</p>
-      </div>
-      <h3>Languages</h3>
-      <div>
-        <ul>
-          {countryObject.languages.map((languageObject) => 
-          <li key={languageObject.name}>{languageObject.name}</li>
-          )}
-        </ul>
-      </div>
-      <div>
-        <img src={countryObject.flag} alt={`${countryObject.name} flag`} width="100" />
-      </div>
-      <WeatherInfo capital={countryObject.capital} />
-    </div>
-  )
-}
-
-const CountryList = ({countries, search, country, setCountryView}) => {
-  if (country) {
-    return (
-      <div>
-        <CountryInfo countryArr={countries.filter((countryObject) => countryObject.name.toUpperCase().includes(country.toUpperCase()))} />
-      </div>
-    )
-  }
-
-  if (countries.length === 1 && search) {
-    return (
-    <div>
-      <CountryInfo countryArr={countries} />
-    </div>
-    )
-
-  } else
-  if (countries.length > 0 && countries.length <= 10 && search) {
-    const handleShowClick = (countryObject) => setCountryView(countryObject.name)
-
-    return (
-      <div>
-        {countries.map((countryObject) => {
-          return (
-            <div key={countryObject.name}>
-              {countryObject.name}
-              <button key={countryObject.name} type='button' onClick={() => handleShowClick(countryObject)}>Show</button>
-            </div>
-          )
-        })}
-      </div>
-    )
-
-  } else
-  if (countries.length > 10 && search) {
-    return (
-      <div>
-        <p>Too many matches! Please specify another filter.</p>
-      </div>
-    )
-  }
-
-  return null
 }
 
 const App = () => {
-  const [countries, setCountries] = useState([])
-  const [searchTarget, setSearchTarget] = useState('')
-  const [showCountry, setShowCountry] = useState('')
+  const [persons, setPersons] = useState([])
+  const [newName, setNewName] = useState('')
+  const [newPhone, setNewPhone] = useState('')
+  const [filter, setFilter] = useState('')
 
   useEffect(() => {
     axios
-      .get('https://restcountries.eu/rest/v2/all')
-      .then(response => setCountries(response.data))
+      .get('http://localhost:3001/persons')
+      .then(response => setPersons(response.data))
   }, [])
 
-  const searchHandler = (event) => {
-    setShowCountry('')
-    setSearchTarget(event.target.value)
+  const nameHandler = (event) => setNewName(event.target.value)
+  const phoneHandler = (event) => setNewPhone(event.target.value)
+
+  const submitHandler = (event) => {
+    event.preventDefault()
+    
+    if (newName === '' || newPhone === '') {
+      alert('Please enter a value for both fields.')
+      return
+    }
+
+    const findDuplicate = persons.filter(personObject => personObject.name === newName)
+    if (findDuplicate.length !== 0) {
+      alert(`${newName} already in phonebook.`)
+      return
+    }
+
+    const personObject = {
+      name: newName,
+      number: newPhone,
+      id: persons.length + 1
+    }
+
+    axios
+      .post('http://localhost:3001/persons', personObject)
+      .then(response => {
+        setPersons(persons.concat(response.data))
+        setNewName('')
+        setNewPhone('')
+      })
+      .catch(err => console.log(err))
   }
-  const countriesToShow = countries.filter((countryObject) => countryObject.name.toUpperCase().includes(searchTarget.toUpperCase()))
+
+  const filterHandler = (event) => setFilter(event.target.value)
+  const personsToShow = persons.filter((personObject) => personObject.name.toUpperCase().includes(filter.toUpperCase()))
 
   return (
     <div>
-      Find Countries: <input value={searchTarget} onChange={searchHandler} />
-      <CountryList countries={countriesToShow} search={searchTarget} country={showCountry} setCountryView={setShowCountry} />
+      <h2>Phonebook</h2>
+      <Filter filter={filter} filterHandler={filterHandler} />
+      <h3>Add a new person</h3>
+      <PersonForm
+        submitHandler={submitHandler}
+        nameVal={newName} nameHandler={nameHandler}
+        phoneVal={newPhone} phoneHandler={phoneHandler}
+      />
+      <h2>Numbers</h2>
+      <PersonsList personsList={personsToShow} />
     </div>
   )
 }
+
+export default App
 
 ReactDOM.render(
   <App />,
