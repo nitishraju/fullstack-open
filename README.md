@@ -6,4 +6,8 @@ The primary focus is on building applications with ReactJS that utilize REST API
 
 The course covers development, testing, configuration and environment management, along with the usage of MongoDB to store application data.
 
-My solutions to each section of the course can be found as part of the commit history, ordered from the earliest exercises to the later ones.
+## In this repo:
+
+My solutions to parts 0, 1, & 2 of the course can be found in their respective folders, labeled by the application name.
+
+Later parts require applications to be in their own repos to allow for easier deployment.
