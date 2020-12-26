@@ -1,0 +1,7 @@
+#general
+**/node_modules/
+**/.env
+**/.eslintcache
+
+#part2
+part2/phonebook/db.json
