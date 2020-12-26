@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import PersonForm from './components/PersonsForm'
 import PersonsList from './components/PersonsList'
+import Notification from './components/Notification'
 
 import personService from './services/persons'
 
@@ -8,36 +9,6 @@ const Filter = ({ filter, filterHandler }) => {
   return (
   <div>
     Search: <input value={filter} onChange={filterHandler} />
-  </div>
-  )
-}
-
-const Notification = ({ message }) => {
-  if (message === null) {
-  return null
-  }
-
-  let msgColor = null
-  if (message.split(' ')[0] === 'Added' || message.split(' ')[0] === 'Updated') {
-    msgColor = 'green'
-  }
-  else {
-    msgColor = 'red'
-  }
-
-  const notifStyle = {
-    color: msgColor,
-    background: 'lightgrey',
-    fontSize: 20,
-    borderStyle: 'solid',
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 10
-  }
-
-  return (
-  <div className="error" style={notifStyle}>
-    {message}
   </div>
   )
 }
