@@ -11,10 +11,10 @@ const TextInput = ({ text, value, handler }) => {
 const PersonForm = ({ submitHandler, nameVal, nameHandler, phoneVal, phoneHandler }) => {
   return (
     <form onSubmit={submitHandler} >
-      <TextInput text="name" value={nameVal} handler={nameHandler} />
-      <TextInput text="phone" value={phoneVal} handler={phoneHandler} />
+      <TextInput text="Name" value={nameVal} handler={nameHandler} />
+      <TextInput text="Phone" value={phoneVal} handler={phoneHandler} />
       <div>
-        <button type="submit">add</button>
+        <button type="submit">Add</button>
       </div>
     </form>
   )
