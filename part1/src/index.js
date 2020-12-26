@@ -34,17 +34,17 @@ const App = () => {
       alert('Please enter a value for both fields.')
       return
     }
-
-    const findDuplicate = persons.filter(personObject => personObject.name === newName)
-    if (findDuplicate.length !== 0) {
-      alert(`${newName} already in phonebook.`)
-      return
-    }
-
-    const generatePersonObject = () => {
-      const id = persons.length > 0 
-                ? persons[persons.length - 1].id + 1 
-                : 1
+    
+    const generatePersonObject = (givenId) => {
+      let id = null;
+      if (givenId !== undefined) {
+        id = givenId
+      }
+      else {
+        id = persons.length > 0 
+            ? persons[persons.length - 1].id + 1 
+            : 1
+      }
 
       const person = {
         name: newName,
@@ -52,6 +52,24 @@ const App = () => {
         id: id
       }
       return person
+    }
+
+    const findDuplicate = persons.filter(personObject => personObject.name === newName)
+    if (findDuplicate.length !== 0) {
+      const selection = window.confirm(`${newName} already in phonebook. Replace old number with given number?`)
+      if (selection) {
+        const existingPerson = persons.filter((personObject) => personObject.name === newName)
+        const updatedPerson = generatePersonObject(existingPerson[0].id)
+
+        personService
+          .updatePerson(updatedPerson)
+          .then(() => {
+            const newPersons = persons.map((personObject) => personObject.name === updatedPerson.name ? updatedPerson : personObject)
+            setPersons(newPersons)
+          })
+        return
+      }
+      else { return }
     }
 
     personService
@@ -67,7 +85,11 @@ const App = () => {
     const selection = window.confirm(`Delete ${name}?`)
     if (selection) {
       personService.deletePerson(id)
-      
+        .catch(err => {
+          alert(`${name} has already been deleted from the server.`)
+          setPersons(persons.filter((personObject) => personObject.name !== name))
+        })
+
       const changedPersons = persons.filter((personObject) => personObject.id !== id)
       setPersons(changedPersons)
     }
