@@ -101,6 +101,13 @@ const App = () => {
       setNotifMsg(message)
       setTimeout(() => setNotifMsg(null), 5000)
       })
+      .catch(err => {
+        const message = `The information for ${existingPerson[0].name} has already been deleted.`
+        setNotifMsg(message)
+        setTimeout(() => setNotifMsg(null), 5000)
+
+        setPersons(persons.filter((personObject) => personObject.name !== existingPerson[0].name))
+      })
     return
     }
     else { return }
